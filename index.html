@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>iText Chat</title>
+<meta name="description" content="Anonymous peer-to-peer group chat, voice notes and file transfer. No database, nothing stored.">
+<meta name="theme-color" content="#0B0D14">
+<link rel="icon" href="icon.svg" type="image/svg+xml" id="favicon">
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('itext-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body data-view="home">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 4v-4a3 3 0 0 1-3-3z"/><path d="M12 9.5v4"/><circle cx="12" cy="6.7" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><path d="m21.4 11-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m22 8-6 4 6 4z"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.6v14.8a1 1 0 0 0 1.5.9l12.4-7.4a1 1 0 0 0 0-1.8L8.5 3.7A1 1 0 0 0 7 4.6z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1.2" fill="currentColor" stroke="none"/><rect x="14" y="4" width="4" height="16" rx="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="m19 6-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-check2" viewBox="0 0 24 24"><path d="M17 6 7 16.5 2.5 12"/><path d="m22 7.5-9.5 9.5-1.4-1.4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+  <symbol id="i-ghost" viewBox="0 0 24 24"><path d="M9 10h.01M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="i-user-plus" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="m2 5 4 11h12l4-11-6 5-4-7-4 7z"/><path d="M6 20h12"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-3.6-.7L3 21l1.6-4.4A8 8 0 0 1 3 11.5 8.6 8.6 0 0 1 12 3a8.6 8.6 0 0 1 9 8.5z"/></symbol>
+  <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<div class="wallpaper" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>
+
+<div class="app">
+
+  <!-- ============ HOME ============ -->
+  <section class="view view-home" aria-label="Start">
+    <header class="menubar glass reveal" style="--i:0">
+      <div class="brand"><span class="logo"><svg class="ic"><use href="#i-chat"/></svg></span><b>iText Chat</b></div>
+      <div class="menubar-right">
+        <span class="menu-pill"><span class="live-dot"></span>Peer-to-peer</span>
+        <time class="menu-clock" id="menuClock"></time>
+        <button class="icon-btn" data-action="theme" title="Switch theme" aria-label="Switch theme">
+          <svg class="ic t-sun"><use href="#i-sun"/></svg><svg class="ic t-moon"><use href="#i-moon"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="home-grid">
+      <div class="hero">
+        <p class="eyebrow glass reveal" style="--i:1"><svg class="ic"><use href="#i-lock"/></svg>Encrypted · No database · No sign-up</p>
+        <h1 class="reveal" style="--i:2">Chat freely.<br><span class="grad">Leave no trace.</span></h1>
+        <p class="lede reveal" style="--i:3">Group chats, voice notes, photos and files travel straight between browsers. Nothing is stored anywhere, and it's all gone the moment you close the tab.</p>
+        <ul class="features reveal" style="--i:4">
+          <li><span class="tile t-blue"><svg class="ic"><use href="#i-users"/></svg></span><span><b>Groups</b>Up to 100 people</span></li>
+          <li><span class="tile t-green"><svg class="ic"><use href="#i-shield"/></svg></span><span><b>Private</b>End-to-end encrypted</span></li>
+          <li><span class="tile t-orange"><svg class="ic"><use href="#i-mic"/></svg></span><span><b>Voice</b>Notes &amp; any file</span></li>
+          <li><span class="tile t-purple"><svg class="ic"><use href="#i-ghost"/></svg></span><span><b>Ephemeral</b>Nothing saved</span></li>
+        </ul>
+      </div>
+
+      <div class="card-stack reveal" style="--i:3">
+        <div class="deco deco-1" aria-hidden="true">psst… the room is open 👀</div>
+        <div class="deco deco-2" aria-hidden="true">
+          <svg class="ic"><use href="#i-play"/></svg>
+          <i style="--h:40%"></i><i style="--h:75%"></i><i style="--h:55%"></i><i style="--h:95%"></i><i style="--h:60%"></i><i style="--h:35%"></i><i style="--h:80%"></i><i style="--h:50%"></i><i style="--h:30%"></i><i style="--h:65%"></i><i style="--h:45%"></i>
+          <span>0:07</span>
+        </div>
+        <form class="window join-card" id="joinForm" novalidate>
+          <div class="titlebar" aria-hidden="true">
+            <span class="lights"><i></i><i></i><i></i></span>
+            <span class="titlebar-title">New Room</span>
+          </div>
+          <div class="window-body">
+            <div class="join-icon"><svg class="ic"><use href="#i-chat"/></svg></div>
+            <h2>Open a room</h2>
+            <p class="sub">One-to-one or a whole group. Share the room ID and start talking.</p>
+
+            <div class="form-group">
+              <label class="label" for="nameInput">Your name</label>
+              <div class="field">
+                <span class="avatar xs" id="meAvatar" aria-hidden="true">?</span>
+                <input id="nameInput" placeholder="What should people call you?" maxlength="30" autocomplete="nickname" autocapitalize="words" spellcheck="false">
+              </div>
+              <label class="label" for="roomInput">Room ID</label>
+              <div class="field">
+                <span class="field-prefix">#</span>
+                <input id="roomInput" placeholder="night-owls-42" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false">
+                <button class="icon-btn" id="diceBtn" type="button" title="Random room ID" aria-label="Generate a random room ID"><svg class="ic"><use href="#i-shuffle"/></svg></button>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="createBtn" type="button">Create room</button>
+              <button class="btn" id="joinBtn" type="submit">Join room</button>
+            </div>
+            <p class="status" id="homeStatus" role="status" aria-live="polite"></p>
+            <p class="you"><svg class="ic"><use href="#i-lock"/></svg><span>Only people in the room see your name. Nothing is saved on any server.</span></p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer class="home-foot reveal" style="--i:5">
+      <nav class="dock glass" aria-label="Highlights">
+        <span class="dock-item" data-tip="Group chat"><span class="tile t-blue"><svg class="ic"><use href="#i-chat"/></svg></span></span>
+        <span class="dock-item" data-tip="Voice notes"><span class="tile t-orange"><svg class="ic"><use href="#i-mic"/></svg></span></span>
+        <span class="dock-item" data-tip="Photos &amp; videos"><span class="tile t-pink"><svg class="ic"><use href="#i-image"/></svg></span></span>
+        <span class="dock-item" data-tip="Any file, any size"><span class="tile t-teal"><svg class="ic"><use href="#i-file"/></svg></span></span>
+        <span class="dock-sep"></span>
+        <span class="dock-item" data-tip="Direct device to device"><span class="tile t-green"><svg class="ic"><use href="#i-zap"/></svg></span></span>
+        <span class="dock-item" data-tip="Leaves no trace"><span class="tile t-purple"><svg class="ic"><use href="#i-ghost"/></svg></span></span>
+      </nav>
+      <p>Built on WebRTC. The signalling server only introduces browsers to each other. It never sees your messages or files.</p>
+    </footer>
+  </section>
+
+  <!-- ============ CHAT ============ -->
+  <section class="view view-chat" aria-label="Chat">
+
+    <aside class="sidebar glass-panel" aria-label="Room">
+      <div class="side-top">
+        <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        <button class="icon-btn" data-action="theme" type="button" title="Switch theme" aria-label="Switch theme">
+          <svg class="ic t-sun"><use href="#i-sun"/></svg><svg class="ic t-moon"><use href="#i-moon"/></svg>
+        </button>
+      </div>
+      <h2 class="side-title">Chats</h2>
+      <div class="side-search">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <input id="sideSearch" placeholder="Search members" autocomplete="off" aria-label="Search members">
+      </div>
+      <div class="chat-item active" id="sideRoom">
+        <span class="avatar" id="sideAvatar" aria-hidden="true"></span>
+        <span class="chat-item-body">
+          <span class="chat-item-top"><strong id="sideTitle"></strong><time id="sideTime"></time></span>
+          <span class="chat-item-preview" id="sidePreview">Room is open</span>
+        </span>
+      </div>
+      <p class="side-label">Members <span id="sideCount"></span></p>
+      <ul class="member-list side-members" id="sideMembers"></ul>
+      <div class="side-foot">
+        <button class="btn primary" id="sideInvite" type="button"><svg class="ic"><use href="#i-user-plus"/></svg>Invite people</button>
+      </div>
+    </aside>
+
+    <div class="pane" id="pane">
+      <header class="chat-head glass" id="chatHead">
+        <span class="avatar room" id="roomAvatar" aria-hidden="true"></span>
+        <button class="who" id="whoBtn" type="button" aria-label="Show members">
+          <strong id="roomTitle"></strong>
+          <span class="presence" id="presence" data-state="online"></span>
+        </button>
+        <div class="head-actions">
+          <button class="icon-btn with-count" id="membersBtn" type="button" title="Members" aria-label="Show members">
+            <svg class="ic"><use href="#i-users"/></svg><span class="count" id="memberCount">1</span>
+          </button>
+          <button class="icon-btn" id="inviteBtn" type="button" title="Invite people" aria-label="Invite people"><svg class="ic"><use href="#i-user-plus"/></svg></button>
+          <button class="icon-btn head-theme" data-action="theme" type="button" title="Switch theme" aria-label="Switch theme">
+            <svg class="ic t-sun"><use href="#i-sun"/></svg><svg class="ic t-moon"><use href="#i-moon"/></svg>
+          </button>
+          <button class="icon-btn danger" id="leaveBtn" type="button" title="Leave room" aria-label="Leave room"><svg class="ic"><use href="#i-logout"/></svg></button>
+        </div>
+      </header>
+
+      <div class="messages" id="messages">
+        <div class="thread">
+          <div class="empty" id="empty" hidden>
+            <div class="radar"><span></span><span></span><span></span><div class="logo"><svg class="ic"><use href="#i-chat"/></svg></div></div>
+            <p class="eyebrow glass"><span class="live-dot"></span>Room is live</p>
+            <h2 class="room-code" id="emptyCode"></h2>
+            <p class="muted">You're the first one here. Invite people and the chat starts the moment they join. Feel free to switch tabs, you'll be notified.</p>
+            <div class="actions">
+              <button class="btn primary" id="emptyInvite" type="button"><svg class="ic"><use href="#i-user-plus"/></svg>Invite people</button>
+              <button class="btn" id="emptyCopy" type="button"><svg class="ic"><use href="#i-copy"/></svg>Copy link</button>
+            </div>
+          </div>
+          <div id="list" aria-live="polite"></div>
+          <div class="row them typing" id="typing" hidden>
+            <div class="bubble"><i></i><i></i><i></i></div>
+            <span class="typing-label" id="typingLabel"></span>
+          </div>
+        </div>
+      </div>
+
+      <button class="jump glass" id="jumpBtn" type="button" hidden aria-label="Scroll to newest messages"><svg class="ic"><use href="#i-arrow-down"/></svg><span id="jumpCount"></span></button>
+
+      <footer class="composer" id="composer">
+        <div class="bar-wrap">
+          <div class="banner glass" id="banner" hidden>
+            <svg class="ic"><use href="#i-alert"/></svg>
+            <span class="banner-text" id="bannerText"></span>
+            <div class="banner-actions">
+              <button class="btn small primary" id="rejoinBtn" type="button">Rejoin</button>
+              <button class="btn small" id="bannerLeaveBtn" type="button">Leave</button>
+            </div>
+          </div>
+
+          <div class="compose-bar" id="composeBar">
+            <button class="icon-btn glass-btn" id="attachBtn" type="button" title="Send photos, videos or files" aria-label="Attach files"><svg class="ic"><use href="#i-plus"/></svg></button>
+            <input type="file" id="fileInput" multiple hidden>
+            <div class="input-pill glass">
+              <textarea id="msgInput" rows="1" placeholder="Message" maxlength="20000" aria-label="Message"></textarea>
+            </div>
+            <button class="send-btn" id="sendBtn" type="button" aria-label="Record a voice message">
+              <svg class="ic i-mic"><use href="#i-mic"/></svg><svg class="ic i-send"><use href="#i-send"/></svg>
+            </button>
+          </div>
+
+          <div class="rec-bar glass" id="recBar" hidden>
+            <button class="icon-btn danger" id="recCancel" type="button" title="Discard" aria-label="Discard recording"><svg class="ic"><use href="#i-trash"/></svg></button>
+            <span class="rec-dot"></span>
+            <span class="rec-time" id="recTime">0:00</span>
+            <div class="rec-scope" id="recScope"></div>
+            <button class="send-btn" id="recSend" type="button" aria-label="Send voice message"><svg class="ic"><use href="#i-send"/></svg></button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </section>
+</div>
+
+<!-- Members drawer -->
+<div class="drawer" id="drawer" hidden>
+  <aside class="drawer-panel glass-panel" role="dialog" aria-label="Members">
+    <header class="drawer-head">
+      <h3>Members <span id="drawerCount"></span></h3>
+      <button class="icon-btn" id="drawerClose" type="button" title="Close" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="drawer-search">
+      <svg class="ic"><use href="#i-search"/></svg>
+      <input id="memberSearch" placeholder="Search members" autocomplete="off" aria-label="Search members">
+    </div>
+    <ul class="member-list" id="memberList"></ul>
+    <footer class="drawer-foot">
+      <button class="btn primary" id="drawerInvite" type="button"><svg class="ic"><use href="#i-user-plus"/></svg>Invite people</button>
+    </footer>
+  </aside>
+</div>
+
+<!-- Invite sheet -->
+<div class="modal" id="inviteModal" hidden>
+  <div class="window modal-card" role="dialog" aria-label="Invite people">
+    <button class="icon-btn modal-x" id="inviteClose" type="button" title="Close" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+    <p class="eyebrow glass"><span class="live-dot"></span>Invite people</p>
+    <h2 class="room-code" id="inviteCode"></h2>
+    <p class="muted">Anyone with this link or room ID can join while the room is open.</p>
+    <div class="link-row">
+      <code id="inviteLink"></code>
+      <button class="icon-btn" id="copyLinkBtn" type="button" title="Copy invite link" aria-label="Copy invite link"><svg class="ic"><use href="#i-copy"/></svg></button>
+    </div>
+    <div class="qr" id="qr" aria-label="QR code for the invite link"></div>
+    <p class="qr-hint">Scan to join from a phone</p>
+    <div class="actions single">
+      <button class="btn primary" id="shareBtn" type="button"><svg class="ic"><use href="#i-share"/></svg>Share invite</button>
+    </div>
+  </div>
+</div>
+
+<div class="drop" id="drop" hidden><div><svg class="ic"><use href="#i-upload"/></svg><p>Drop to send</p></div></div>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-label="Image preview">
+  <div class="lb-bar glass">
+    <span id="lbName"></span>
+    <a class="icon-btn" id="lbDownload" title="Download" aria-label="Download"><svg class="ic"><use href="#i-download"/></svg></a>
+    <button class="icon-btn" id="lbClose" type="button" title="Close" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <img id="lbImg" alt="">
+</div>
+
+<div class="toast glass" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="app.js?v=5"></script>
+</body>
+</html>
